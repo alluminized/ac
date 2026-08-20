@@ -1,90 +1,72 @@
 t = int(input())
 
-for kk in range(t):
-
-    a = str(input())
-
+for _ in range(t):
+    a = input()
     for i in range(len(a)):
         if a[i] == "+" or a[i] == "-" or a[i] == "*":
             sps = str(a[i])
+    # str로 식을 입력받은 다음 부호 기준으로 좌우 분할
+
+    a_l, a_r = a.split(sps)[0], a.split(sps)[1]
+    a_li, a_ri = int(a_l), int(a_r)
+    # 코드 가독성 개선을 위한 변수 설정
 
     if sps != "*":
-        ln = max(len(a.split(sps)[0]), len(a.split(sps)[1]) + 1)
-    elif len(str(int(a.split(sps)[0]) * int(a.split(sps)[1]))) == 1:
-        ln = len(str(int(a.split(sps)[0]) * int(a.split(sps)[1]))) + 1
+        ln = max(len(a_l), len(a_r) + 1)
+    elif len(str(a_li * a_ri)) == 1:
+        ln = len(str(a_li * a_ri)) + 1
     else:
-        ln = len(str(int(a.split(sps)[0]) * int(a.split(sps)[1])))
+        ln = len(str(a_li * a_ri))
 
-    if sps == "+":
+    if sps == "+" or sps == "-":
         barln = max(
-            len(a.split(sps)[1]) + 1,
-            len(str(int(a.split(sps)[0]) + int(a.split(sps)[1]))),
+            len(a_r) + 1,
+            len(str(a_li + a_ri)),
         )
-    elif sps == "-":
+    elif sps == "*" and len(a_r) == 1:
         barln = max(
-            len(a.split(sps)[1]) + 1,
-            len(str(int(a.split(sps)[0]) - int(a.split(sps)[1]))),
+            len(a_r) + 1,
+            len(str(a_li * a_ri)),
         )
-    elif sps == "*" and len(a.split(sps)[1]) == 1:
-        barln = max(
-            len(a.split(sps)[1]) + 1,
-            len(str(int(a.split(sps)[0]) * int(a.split(sps)[1]))),
-        )
-    elif sps == "*" and len(a.split(sps)[1]) > 1:
-        barln = len(a.split(sps)[1]) + 1
-        barln2 = len(str(int(a.split(sps)[0]) * int(a.split(sps)[1])))
+    elif sps == "*" and len(a_r) > 1:
+        barln = len(a_r) + 1
+        barln_bottom = len(str(a_li * a_ri))
 
-    if sps == "*" and len(a.split(sps)[0]) > 1:
-        print(a.split(sps)[0].rjust(ln))
+    if sps == "*" and len(a_l) > 1:
+        print(a_l.rjust(ln))
     else:
-        print(a.split(sps)[0].rjust(barln))
+        print(a_l.rjust(barln))
 
     if sps == "+":
-        print(("+" + a.split(sps)[1]).rjust(ln))
+        print(("+" + a_r).rjust(ln))
         print(("-" * barln).rjust(ln))
     elif sps == "-":
-        print(("-" + a.split(sps)[1]).rjust(ln))
+        print(("-" + a_r).rjust(ln))
         print(("-" * barln).rjust(ln))
-    elif sps == "*" and len(a.split(sps)[1]) == 1:
-        print(("*" + a.split(sps)[1]).rjust(ln))
-        print(("-" * barln).rjust(ln))
-    elif sps == "*" and len(a.split(sps)[1]) > 1:
-        print(("*" + a.split(sps)[1]).rjust(ln))
-        print(
-            (
-                "-"
-                * max(
-                    len(
-                        str(
-                            int(a.split(sps)[0])
-                            * int(str(a.split(sps)[1])[len(a.split(sps)[1]) - (1)])
-                        )
-                    ),
-                    barln,
-                )
-            ).rjust(ln)
-        )
-        for i in range(len(a.split(sps)[1])):
-            if len(a.split(sps)[0]) == 1:
-                print(
-                    str(
-                        int(a.split(sps)[0])
-                        * int(str(a.split(sps)[1])[len(a.split(sps)[1]) - (i + 1)])
-                    ).rjust(barln - i)
-                )
-            else:
-                print(
-                    str(
-                        int(a.split(sps)[0])
-                        * int(str(a.split(sps)[1])[len(a.split(sps)[1]) - (i + 1)])
-                    ).rjust(ln - i)
-                )
-        print(("-" * barln2).rjust(barln))
-
-    if sps == "+":
-        print(str(int(a.split(sps)[0]) + int(a.split(sps)[1])).rjust(ln))
-    elif sps == "-":
-        print(str(int(a.split(sps)[0]) - int(a.split(sps)[1])).rjust(ln))
     elif sps == "*":
-        print(str(int(a.split(sps)[0]) * int(a.split(sps)[1])).rjust(barln))
+        if len(a_r) == 1:
+            print(("*" + a_r).rjust(ln))
+            print(("-" * barln).rjust(ln))
+        elif len(a_r) > 1:
+            print(("*" + a_r).rjust(ln))
+            print(
+                (
+                    "-" * max(len(str(a_li * int(str(a_r)[len(a_r) - (1)]))), barln)
+                ).rjust(ln)
+            )
+            for i in range(len(a_r)):
+                if len(a_l) == 1:
+                    print(
+                        str(a_li * int(str(a_r)[len(a_r) - (i + 1)])).rjust(barln - i)
+                    )
+                else:
+                    print(str(a_li * int(str(a_r)[len(a_r) - (i + 1)])).rjust(ln - i))
+            print(("-" * barln_bottom).rjust(barln))
+
+    if sps == "+":
+        print(str(a_li + a_ri).rjust(ln))
+    elif sps == "-":
+        print(str(a_li - a_ri).rjust(ln))
+    elif sps == "*":
+        print(str(a_li * a_ri).rjust(barln))
     print()
